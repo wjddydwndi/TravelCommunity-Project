@@ -1,4 +1,3 @@
-# TourProject
 # TravelCommunity Project
 <ul>
   <li>프로젝트 주제 : 여행 커뮤니티 사이트</li>
