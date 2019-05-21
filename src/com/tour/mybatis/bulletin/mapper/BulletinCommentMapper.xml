@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BulletinComment">
+	<resultMap type="BulletinComment" id="commentMap">
+		<id property="bulletin_comment_id" column="bulletin_comment_id" />
+		<result property="content" column="content" />
+		<result property="regdate" column="regdate" />
+		<result property="depth" column="depth" />
+		<result property="rank" column="rank" />
+		<association property="bulletinBoard"
+			column="bulletin_board_id" select="BulletinBoard.select"
+			javaType="BulletinBoard"></association>
+		<association property="member" column="member_id"
+			select="BulletinMember.select" javaType="BulletinMember"></association>
+	</resultMap>
+	<select id="selectAll" resultMap="commentMap">
+		<include refid="selectInclude"></include>
+		order by bulletin_comment_id desc
+	</select>
+	<select id="select" resultMap="commentMap" parameterType="int">
+		<include refid="selectInclude"></include>
+		where bulletin_comment_id=#{bulletin_comment_id}
+	</select>
+	<select id="selectByBoard" resultMap="commentMap"
+		parameterType="int">
+		<include refid="selectInclude"></include>
+		where bulletin_board_id=#{bulletinBoard.bulletin_board_id} order by
+		bulletin_comment_id desc
+	</select>
+	<!-- insert by oracle -->
+	<insert id="insert" parameterType="BulletinComment">
+		insert into
+		bulletin_comment(bulletin_comment_id,content,member_id,bulletin_board_id,depth,rank)
+		values(seq_bulletin_comment.nextval,#{content},#{member.member_id},#{bulletinBoard.bulletin_board_id},0,1)
+	</insert>
+
+<!-- 
+ 
+	insert by mariaDB
+	<insert id="insert" parameterType="BulletinComment">
+		insert into
+		bulletin_comment(content,member_id,bulletin_board_id,depth,rank)
+		values(#{content},#{member.member_id},#{bulletinBoard.bulletin_board_id},0,1)
+	</insert>
+	
+
+ -->
+	<update id="update" parameterType="BulletinComment">
+		update bulletin_comment
+		set
+		content = #{content}, regdate = sysdate
+		where
+		bulletin_comment_id=#{bulletin_comment_id}
+	</update>
+	<delete id="delete" parameterType="int">
+		delete from bulletin_comment
+		where bulletin_comment_id = #{bulletin_comment_id}
+	</delete>
+	<delete id="deleteByBoard" parameterType="int">
+		delete from
+		bulletin_comment where bulletin_board_id =
+		#{bulletinBoard.bulletin_board_id}
+	</delete>
+	<sql id="selectInclude">
+		select
+		bulletin_comment_id,member_id,content,bulletin_board_id,depth,rank,regdate
+		from bulletin_comment
+	</sql>
+</mapper>

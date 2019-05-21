@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Gallery_comment">
+	<!-- insert by oracle -->
+	<insert id="insert" parameterType="Gallery_comment">
+		insert into gallery_comment(comment_id,gallery_id,member_id,content,regdate)
+		values(seq_gallery_comment.nextval,#{gallery.gallery_id},#{member.member_id},#{content},sysdate)
+	</insert>
+
+	<update id="update" parameterType="Gallery_comment">
+		update gallery_comment set content=#{content}, regdate=sysdate where
+		comment_id=#{comment_id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from gallery_comment where comment_id=#{comment_id}
+	</delete>
+
+
+	<resultMap type="Gallery_comment" id="Gallery_commentAll">
+		<id column="comment_id" property="comment_id" />
+		<result column="content" property="content" />
+		<result column="regdate" property="regdate" />
+		<association column="gallery_id" property="gallery"
+			javaType="Gallery" select="Gallery.select" />
+		<association column="member_id" property="member"
+			javaType="BulletinMember" select="BulletinMember.select" />
+	</resultMap>
+
+	<select id="selectAll" parameterType="int"
+		resultMap="Gallery_commentAll">
+		select comment_id,gallery_id,member_id,content,regdate from gallery_comment
+		where gallery_id=#{gallery_id} order by regdate desc
+	</select>
+
+	<select id="select" parameterType="int"
+		resultMap="Gallery_commentAll">
+		select * from gallery_comment where gallery_id=#{gallery_id}
+	</select>
+
+	<delete id="deleteAll" parameterType="int">
+		delete from gallery_comment
+		where gallery_id=#{gallery_id}
+	</delete>
+
+</mapper>

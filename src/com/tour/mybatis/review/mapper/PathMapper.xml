@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Path">
+	<resultMap type="Path" id="pathMap">
+		<id		column="path_id" 		property="path_id"/>
+		<result	column="lati"				property="lati"/>
+		<result	column="longi"				property="longi"/>
+		<result	column="path_name"	property="path_name"/>
+		<association column="review_id" property="review"	
+							javaType="Review" 	select="Review.select"/>
+	</resultMap>
+	
+	<select id="select" parameterType="int" resultMap="pathMap">
+		select path_id, lati, longi, review_id, path_name
+		from path
+		where path_id = #{path_id}
+	</select>
+	<select id="selectByReviewId" parameterType="int" resultType="Path">
+		select path_id, lati, longi, review_id, path_name
+		from path
+		where review_id = #{review.review_id}
+	</select>
+	
+	<!-- insert by oracle -->
+	<insert id="insert" parameterType="Path">
+		insert into path(path_id,lati,longi,review_id, path_name)
+		values(seq_path.nextval,#{lati},#{longi},#{review.review_id}, #{path_name})
+	</insert>
+<!-- 	
+	
+	insert by mariaDB
+	<insert id="insert" parameterType="Path">
+		insert into path(lati,longi,review_id, path_name)
+		values(#{lati},#{longi},#{review.review_id}, #{path_name})
+	</insert>
+	 -->
+	
+	<delete id="deleteByReviewId" parameterType="int">
+ 		delete from path where review_id = #{review.review_id}
+ 	</delete>
+</mapper>

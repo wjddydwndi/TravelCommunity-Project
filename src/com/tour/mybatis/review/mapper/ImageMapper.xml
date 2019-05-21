@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Image">
+	<resultMap type="Image" id="ImageMap">
+		<id column="image_id" property="image_id" />
+		<result column="file_name" property="file_name" />
+		<association column="review_id" property="review"
+			javaType="Review" select="Review.select" />
+	</resultMap>
+	<select id="select" parameterType="int" resultMap="ImageMap">
+		select image_id, file_name, review_id
+		from image
+		where image_id = #{image_id}
+	</select>
+
+	<select id="selectByReviewId" parameterType="int"
+		resultType="Image">
+		select image_id, file_name,review_id
+		from image
+		where
+		review_id = #{review.review_id}
+
+	</select>
+
+	<!-- insert by oracle -->
+	<insert id="insert" parameterType="image">
+		insert into
+		image(image_id,review_id,file_name)
+		values(seq_image.nextval,#{review.review_id},#{file_name})
+	</insert>
+<!-- 
+
+	insert by mariaDB
+	<insert id="insert" parameterType="image">
+		insert into
+		image(review_id,file_name)
+		values(#{review.review_id},#{file_name})
+	</insert>
+ -->
+
+	<delete id="delete" parameterType="int">
+		delete from image
+		where
+		image_id = #{image_id}
+	</delete>
+
+	<delete id="deleteByReviewId" parameterType="int">
+		delete from image where review_id = #{review.review_id}
+	</delete>
+
+	<delete id="deleteFile" parameterType="Image">
+		delete from image where file_name = #{file_name}
+	</delete>
+
+</mapper>

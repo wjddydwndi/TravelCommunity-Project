@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<typeAliases>
+	<typeAlias type="com.tour.model.domain.QnABoard" alias="QnABoard"/>
+	<typeAlias type="com.tour.model.domain.Answer" alias="Answer"/>
+	<typeAlias type="com.tour.model.domain.QnABoardPrivacyPass" alias="QnABoardPrivacyPass"/>
+	<!-- =========================자유게시판========================= -->
+	<typeAlias type="com.tour.model.bulletin.domain.BulletinMember" alias="BulletinMember"/>
+	<typeAlias type="com.tour.model.bulletin.domain.BulletinBoard" alias="BulletinBoard"/>
+	<typeAlias type="com.tour.model.bulletin.domain.BulletinComment" alias="BulletinComment"/>
+	<typeAlias type="com.tour.model.bulletin.domain.MemberLevel" alias="MemberLevel"/>
+	<typeAlias type="com.tour.model.bulletin.domain.Head" alias="Head"/>
+	
+	<!--========================갤러리 게시판 ======================== -->
+	<typeAlias type="com.tour.model.gallery.domain.Gallery"  alias="Gallery"/>
+	<typeAlias type="com.tour.model.gallery.domain.Gallery_comment"  alias="Gallery_comment"/>
+	<typeAlias type="com.tour.model.gallery.domain.Gallery_image"  alias="Gallery_image"/>
+	
+	
+	<!--=======================리뷰 게시판=========================== -->
+	<typeAlias type="com.tour.model.review.domain.Image" 					alias="Image"/>
+	<typeAlias type="com.tour.model.review.domain.Location" 				alias="Location"/>
+	<typeAlias type="com.tour.model.review.domain.Review" 					alias="Review"/>
+	<typeAlias type="com.tour.model.review.domain.Review_comment" 	alias="Review_comment"/>
+	<typeAlias type="com.tour.model.review.domain.Type" 						alias="Type"/>
+	<typeAlias type="com.tour.model.review.domain.Path" 						alias="Path"/>
+	<typeAlias type="com.tour.model.review.domain.Good" 						alias="Good"/>
+	<!--========================api========================= -->
+	<typeAlias type="com.tour.api.model.domain.Weather" 						alias="Weather"/>
+	
+	
+</typeAliases>
+  <mappers>
+    <mapper resource="com/tour/mybatis/contact/mapper/MariaDBQnABoardMapper.xml"/>
+    <mapper resource="com/tour/mybatis/contact/mapper/MariaDBAnswerMapper.xml"/>
+    <mapper resource="com/tour/mybatis/contact/mapper/MariaDBQnABoardPrivacyPassMapper.xml"/>
+    <!-- =========================자유게시판========================= -->
+    <mapper resource="com/tour/mybatis/bulletin/mapper/MariaDBBulletinMemberMapper.xml"/>   
+    <mapper resource="com/tour/mybatis/bulletin/mapper/MariaDBBulletinBoardMapper.xml"/>
+    <mapper resource="com/tour/mybatis/bulletin/mapper/MariaDBBulletinCommentMapper.xml"/>
+    <mapper resource="com/tour/mybatis/bulletin/mapper/MariaDBHeadMapper.xml"/>
+    <mapper resource="com/tour/mybatis/bulletin/mapper/MariaDBMemberLevelMapper.xml"/>
+    <!--=======================갤러리 게시판=========================== -->
+    
+    <mapper resource="com/tour/mybatis/gallery/mapper/MariaDBGalleryMapper.xml"/>
+    <mapper resource="com/tour/mybatis/gallery/mapper/MariaDBGallery_imageMapper.xml"/>   
+    <mapper resource="com/tour/mybatis/gallery/mapper/MariaDBGallery_commentMapper.xml"/>
+   
+    
+    <!--========================리뷰 게시판========================= -->
+    <mapper resource="com/tour/mybatis/review/mapper/MariaDBImageMapper.xml" />
+	<mapper resource="com/tour/mybatis/review/mapper/MariaDBLocationMapper.xml" />
+	<mapper resource="com/tour/mybatis/review/mapper/MariaDBReviewMapper.xml" />
+	<mapper resource="com/tour/mybatis/review/mapper/MariaDBReview_commentMapper.xml" />
+	<mapper resource="com/tour/mybatis/review/mapper/MariaDBTypeMapper.xml" />
+	<mapper resource="com/tour/mybatis/review/mapper/MariaDBPathMapper.xml" />
+	<mapper resource="com/tour/mybatis/review/mapper/MariaDBGoodMapper.xml" />
+	    <!--========================api========================= -->
+	<mapper resource="com/tour/mybatis/api/mapper/MariaDBWeatherMapper.xml" />
+    
+  </mappers>
+</configuration>

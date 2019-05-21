@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Review">
+	<resultMap type="Review" id="reviewMap">
+		<id column="review_id" property="review_id" />
+		<result column="review_title" property="review_title" />
+		<result column="review_content" property="review_content" />
+		<result column="review_regdate" property="review_regdate" />
+		<result column="review_hit" property="review_hit" />
+		<association column="member_id" property="member"
+			javaType="BulletinMember" select="BulletinMember.select" />
+		<collection property="image" column="review_id"
+			javaType="java.util.ArrayList" ofType="Image"
+			select="Image.selectByReviewId" />
+		<collection property="paths" column="review_id"
+			javaType="java.util.ArrayList" ofType="Path"
+			select="Path.selectByReviewId" />
+	</resultMap>
+
+	<sql id="select_sql">
+		select review_id, member_id, review_title, review_content,
+		review_regdate, review_hit
+	</sql>
+
+	<select id="select" parameterType="int" resultMap="reviewMap">
+		<include refid="select_sql" />
+		from review
+		where review_id=#{review_id}
+	</select>
+
+	<select id="selectAll" resultMap="reviewMap">
+		<include refid="select_sql" />
+		from review
+		order by review_id desc
+	</select>
+	<!-- insert by oracle -->
+	<insert id="insert" parameterType="review">
+		insert into review(review_id,member_id,review_title,review_content)
+		values(seq_review.nextval,#{member.member_id},#{review_title},#{review_content})
+		<selectKey keyProperty="review_id" resultType="int">
+			select seq_review.currval as review_id from dual
+		</selectKey>
+	</insert>
+<!-- 
+
+	insert by mariaDB
+	<insert id="insert" parameterType="review">
+		insert into review(member_id,review_title,review_content)
+		values(#{member.member_id},#{review_title},#{review_content})
+		<selectKey keyProperty="review_id" resultType="int">
+			select max(review_id)+1 from Answer
+		</selectKey>
+	</insert> 
+	-->
+
+	<update id="updateHit" parameterType="int">
+		update review set
+		review_hit = review_hit+1
+		where review_id = #{review_id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from review
+		where review_id = #{review_id}
+	</delete>
+
+  	<update id="update" parameterType="Review">
+  		update review
+  		set review_title = #{review_title},
+  		review_content = #{review_content}
+  		where review_id = #{review_id}
+  	</update>
+  	
+	<select id="selectMyReview" parameterType="int"
+		resultType="Review">
+		<include refid="select_sql" />
+		from review
+		where member_id = #{member.member_id}
+	</select>
+	
+	<select id="selectByGood" resultMap="reviewMap">
+		<![CDATA[
+		select r.review_id as review_id,i.FILE_NAME,r.review_title as review_title ,g.cnt
+		from review r
+		,(select REVIEW_ID,FILE_NAME from image where ROWID IN (SELECT MAX(ROWID)
+		FROM image GROUP BY REVIEW_ID) order by review_id  DESC
+		) i
+		, (SELECT COUNT(REVIEW_ID) as cnt,REVIEW_id FROM good GROUP BY REVIEW_ID order by cnt DESC) g
+		where r.review_id = g.review_id
+		AND r.REVIEW_ID =i.review_id
+		AND rownum <=3
+		order BY g.cnt DESC,REVIEW_ID DESC
+		]]>
+	</select>
+
+</mapper>

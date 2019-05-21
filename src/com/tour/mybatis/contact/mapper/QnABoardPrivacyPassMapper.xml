@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QnABoardPrivacyPass">
+   
+  <!-- 비공개글 비밀번호 체크 -->
+  <select id="select" parameterType="int" resultType="String">
+  	select privacy_pass from qnaboard_privacy_pass where qnaBoard_id=#{qnaBoard_id}
+  </select>
+  
+  <!-- 비공개글 비밀번호 등록 -->
+  <insert id="insert" parameterType="QnABoardPrivacyPass">
+  	insert into qnaBoard_privacy_pass(qnaBoard_privacy_pass_id, privacy_pass, qnaBoard_id) values(seq_qnaBoard_privacy_pass.nextval, #{privacy_pass}, #{qnaBoard_id})
+  </insert>
+<!--   
+    비공개글 비밀번호 등록
+  <insert id="insert" parameterType="QnABoardPrivacyPass">  	
+  	MariaDB Query
+  	==============================================================================================
+  	insert into qnaBoard_privacy_pass(privacy_pass, qnaBoard_id) values(#{privacy_pass}, #{qnaBoard_id})
+  	==============================================================================================
+  </insert>
+  
+   -->
+  <!-- 비공개글 비밀번호 삭제 -->
+  <delete id="delete" parameterType="int">
+  	delete from qnaBoard_privacy_pass where qnaBoard_id=#{qnaBoard_id}
+  </delete>
+  
+</mapper>

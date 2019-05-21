@@ -1,0 +1,28 @@
+/*ÄÚ¸àÆ® CSS start*/
+.container{
+	width:100%;
+}
+.comment-area{
+	width:100%;
+}
+table {
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+}
+
+
+input[type=button] {
+  background-color: dodgerblue;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/*ÄÚ¸àÆ® CSS end*/

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Gallery_image">
+	<!-- insert into oracle -->
+
+	<insert id="insert" parameterType="Gallery_image">
+		insert into
+		gallery_image(gallery_image_id,gallery_id,filename) values(seq_gallery_image.nextval,#{gallery.gallery_id},#{filename})
+	</insert>
+
+	<insert id="updateFile" parameterType="Gallery_image">
+		insert into gallery_image(gallery_image_id,gallery_id,filename) values(seq_gallery_image.nextval,#{gallery.gallery_id},#{filename})
+	</insert>
+
+	<update id="update" parameterType="Gallery_image">
+		update gallery_image set filename=#{filename} where gallery_id=#{gallery.gallery_id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from gallery_image where gallery_image_id=#{gallery_image_id}
+	</delete>
+
+	<resultMap type="Gallery_image" id="Gallery_imageAll">
+		<id column="gallery_image_id" property="gallery_image_id" />
+		<result column="filename" property="filename" />
+		<association column="gallery_id" property="gallery"
+			javaType="Gallery" select="Gallery.select" />
+	</resultMap>
+
+	<select id="selectAll" resultMap="Gallery_imageAll">
+		select gallery_image_id,gallery_id,filename from gallery_image
+	</select>
+
+	<select id="select" parameterType="int"
+		resultType="Gallery_image">
+		select gallery_image_id,gallery_id,filename from gallery_image where gallery_id=#{gallery_id}
+	</select>
+
+	<delete id="deleteAll" parameterType="int">
+		delete from gallery_image where gallery_id=#{gallery_id}
+	</delete>
+
+	<delete id="deleteFile" parameterType="Gallery_image">
+		delete from gallery_image where filename=#{filename}
+	</delete>
+
+	<select id="getGallery_id" parameterType="int"
+		resultMap="Gallery_imageAll">
+		select gallery_image_id,gallery_id,filename from gallery_image where gallery_image_id=#{gallery_image_id}
+	</select>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Review_comment">
+	
+	<resultMap type="Review_comment" 					id="commentMap">
+		<id column="review_comment_id" 					property="review_comment_id"/>
+		<result column="review_comment_content" 	property="review_comment_content"/>
+		<result	column="review_comment_regdate" 	property="review_comment_regdate"/>
+		<association column="member_id" property="member" javaType="BulletinMember" select="BulletinMember.select"/>
+		<association column="review_id" property="review" javaType="Review" select="Review.select" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="Review_comment">
+		insert into review_comment(member_id, review_comment_content, review_id)
+		values(#{member.member_id},
+		#{review_comment_content},
+		#{review.review_id})
+	</insert>
+	
+	<sql id="select_sql">
+		select review_comment_id, review_comment_content, 
+		review_comment_regdate, member_id, review_id 
+	</sql>
+	
+	<select id="select" resultMap="commentMap">
+		<include refid="select_sql"/>
+		from review_comment
+		where review_comment_id = #{review_comment_id}
+	</select>
+	
+	<select id="selectByReviewId" parameterType="int" resultMap="commentMap">
+		<include refid="select_sql"/>
+		from review_comment
+		where review_id = #{review.review_id}
+		order by review_comment_id desc
+	</select>
+	
+	<delete id="delete" parameterType="int">
+		delete from review_comment
+		where review_comment_id = #{review_comment_id}
+	</delete>
+	
+	<update id="update" parameterType="Review_comment">
+		update review_comment set
+		review_comment_content = #{review_comment_content},
+		review_comment_regdate = now()
+		where review_comment_id = #{review_comment_id}
+	</update>
+	
+	<delete id="deleteByReviewId" parameterType="int">
+ 		delete from review_comment where review_id = #{review.review_id}
+ 	</delete>
+	
+</mapper>

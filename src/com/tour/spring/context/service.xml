@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+<!-- ===================== service.xml 에는 DB 연결 정보와 기능관련 bean 들을 명시 ========================== -->
+<!-- DataSource, TransactionManager, DB 기능 Template, Annotation 관련 설정 -->
+
+
+<!-- Annotation 설정 -->
+<!-- =========================================================== -->
+ 	<context:component-scan base-package="com.tour">
+ 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+ 	</context:component-scan>
+<!-- =========================================================== -->
+
+
+<!-- DataSource (DB) 정보 명시 -->
+<!-- =========================================================== -->
+	<!-- OracleDB 관련 설정 -->
+ 
+<!-- 	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/myoracle"
+		resource-ref="true"/> -->
+
+	<!-- MariaDB 관련 설정 -->
+	 
+	 <jee:jndi-lookup id="dataSource" jndi-name="jdbc/tourdb"
+		resource-ref="true"/>
+	
+<!-- =========================================================== -->
+
+	<!-- transactionManager -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" 
+		p:dataSource-ref="dataSource"	/>
+ 
+<!--  DB 사용 기술 관련 명시 -->
+<!-- =========================================================== -->
+
+
+
+		
+	<!-- mariaDB연결시	  -->
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean"
+		p:dataSource-ref="dataSource"
+		p:configLocation="classpath:com/tour/mybatis/config/mybatis_mariaDB_config.xml"/>	
+
+		
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactoryBean"/>
+	</bean>
+<!-- =========================================================== -->
+
+<!-- 파일 업로드 관련 -->
+<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
+		
+		
+	<tx:annotation-driven />
+	
+<!-- 메일 설정 -->
+	
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="wjddydwndi@gmail.com" />
+		<property name="password" value="jung3029!@!" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+
+	</bean>
+
+</beans>

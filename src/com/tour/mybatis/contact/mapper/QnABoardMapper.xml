@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QnABoard">	
+  <sql id="selectSQL">	
+  	select * from QnABoard
+  </sql>
+  
+  <!-- 모든 게시글 가져오기 -->
+  <select id="selectAll" resultType="QnABoard">
+  	<include refid="selectSQL"/> order by qnaBoard_type_id, qnaBoard_id desc
+  </select>
+  
+  <!-- 글 등록!! -->
+  <insert id="insert" parameterType="QnABoard">
+  	insert into QnABoard(qnaBoard_id, member_id, qnaBoard_title, qnaBoard_writer, qnaBoard_content, qnaBoard_type_id, qnaBoard_privacy_id) values(seq_qnaBoard.nextval, #{member_id}, #{qnaBoard_title}, #{qnaBoard_writer}, #{qnaBoard_content}, #{qnaBoard_type_id}, #{qnaBoard_privacy_id})
+  	<selectKey resultType="int" keyProperty="qnaBoard_id">
+  		select seq_qnaboard.currval as qnaBoard_id from dual
+  	</selectKey>
+  </insert>
+
+
+<!--   
+  글 등록!! MariaDB Query
+  <insert id="insert" parameterType="QnABoard">  	
+  	
+  	===========================================================================================================
+  		insert into QnABoard(member_id, qnaBoard_title, qnaBoard_writer, qnaBoard_content, qnaBoard_type_id, qnaBoard_privacy_id) values(#{member_id}, #{qnaBoard_title}, #{qnaBoard_writer}, #{qnaBoard_content}, #{qnaBoard_type_id}, #{qnaBoard_privacy_id})
+  	===========================================================================================================
+  	<selectKey resultType="int" keyProperty="qnaBoard_id">  	
+  	MariaDB Query
+  	===========================================================================================================
+  		select max(qnaBoard_id)+1 from QnABoard
+  	===========================================================================================================
+  	</selectKey>
+  </insert>
+  
+   -->
+  <!-- 글 한건 정보 가저오기 -->
+  <select id="select" parameterType="int" resultType="QnABoard">
+  	<include refid="selectSQL"/> where qnaBoard_id=#{qnaBoard_id}
+  </select>
+  
+  
+  <!-- 게시글 한 건 삭제하기! -->
+  <delete id="delete" parameterType="int">
+  	delete from QnABoard where qnaBoard_id=#{qnaBoard_id}
+  </delete>
+  
+  
+  <!-- 게시글 한 건 수정하기! -->
+  <update id="update" parameterType="QnABoard">
+  	update QnABoard set qnaBoard_title=#{qnaBoard_title}, qnaBoard_content=#{qnaBoard_content}, qnaBoard_privacy_id=#{qnaBoard_privacy_id} where qnaBoard_id=#{qnaBoard_id}
+  </update>
+  
+  
+  <!-- 게시글 1건 조회수 올리기 -->
+  <update id="updateHit" parameterType="int">
+  	update QnABoard set qnaBoard_hit=qnaBoard_hit+1 where qnaBoard_id=#{qnaBoard_id}
+  </update>
+  
+  
+  <!-- 게시글 답변 작성시 답변 상태 update -->
+  <update id="updateAnswerState" parameterType="QnABoard">
+  	update QnABoard set answerState=#{answerState} where qnaBoard_id=#{qnaBoard_id}
+  </update>
+  
+  
+  <!-- 제목에 의한 게시글 검색 -->
+  <select id="searchTitle" parameterType="String" resultType="QnABoard">
+  	<include refid="selectSQL"/> where qnaboard_title like #{searchWord}
+  </select>
+  
+  
+  
+  <!-- 제목+내용에 의한 게시글 검색 -->
+  <select id="searchTitleContent" parameterType="String" resultType="QnABoard">
+  	<include refid="selectSQL"/> where qnaboard_title like #{searchWord} or qnaboard_content like #{searchWord}
+  </select>
+  
+  
+  <!-- 내가 작성한 게시글 조회 -->
+  <select id="selectMyQnaBoards" parameterType="int" resultType="QnABoard">
+  	<include refid="selectSQL"/> where member_id = #{member_id}
+  </select>
+  
+
+  
+</mapper>

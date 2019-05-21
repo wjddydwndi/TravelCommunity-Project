@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Good">
+ 	<resultMap type="Good" id="goodMap">
+ 		<id 				column="good_id" 		property="good_id"/>
+ 		<association	column="member_id" 	property="member" 	
+ 							javaType="BulletinMember" 		select="BulletinMember.select"/>
+ 		<association	column="review_id" 		property="review" 	
+ 							javaType="Review" 		select="Review.select"/>
+ 	</resultMap>
+ 	
+ 	<sql id="sql_select">
+ 		select good_id, member_id, review_id
+ 		from good
+ 	</sql>
+ 	
+ 	<select id="select" parameterType="int" resultMap="goodMap">
+ 		<include refid="sql_select"/>
+ 		where good_id = #{good_id}
+ 	</select>
+ 	
+ 	<insert id="insert" parameterType="Good">
+ 		insert into good(member_id, review_id)
+ 		values(#{member.member_id}, #{review.review_id})
+ 	</insert>
+ 	
+ 	<select id="selectByReviewId" parameterType="int" resultMap="goodMap">
+ 		<include refid="sql_select"/>
+ 		where review_id = #{review.review_id}
+ 	</select>
+ 	
+ 	<delete id="delete" parameterType="int">
+ 		delete from good where good_id = #{good_id}
+ 	</delete>
+ 	
+ 	<delete id="deleteByReviewId" parameterType="int">
+ 		delete from good where review_id = #{review.review_id}
+ 	</delete>
+</mapper>

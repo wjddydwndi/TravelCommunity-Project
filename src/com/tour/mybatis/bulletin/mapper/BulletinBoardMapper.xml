@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BulletinBoard">
+	<resultMap id="boardMap" type="BulletinBoard" >
+		<id property="bulletin_board_id" column="bulletin_board_id"/>
+		<result property="bulletin_title" column="bulletin_title"/>
+		<result property="bulletin_content" column="bulletin_content"/>
+		<result property="bulletin_regdate" column="bulletin_regdate"/>
+		<association property="head" column="bulletin_head_id" select="Head.select" javaType="Head" />
+		<association property="member" column="member_id" select="BulletinMember.select" javaType="BulletinMember" />
+		
+	</resultMap>
+ <select id="selectAll" resultMap="boardMap">
+ 	<include refid="selectInclude"></include> 
+ 	order by bulletin_board_id desc
+ </select>
+ <select id="select" resultMap="boardMap" parameterType="int">
+ <include refid="selectInclude"></include> 
+  where bulletin_board_id =#{bulletin_board_id}
+ </select>
+ 
+ <insert id="insert" parameterType="BulletinBoard">
+ 	insert into bulletin_board(bulletin_board_id,bulletin_head_id,member_id,bulletin_title,bulletin_content)
+ 	values(seq_bulletin_board.nextval,#{head.head_id},#{member.member_id},#{bulletin_title},#{bulletin_content})
+ 	<selectKey keyProperty="bulletin_board_id" resultType="int">
+ 		select seq_bulletin_board.currval as bulletin_board_id from dual
+ 	</selectKey>
+ 	 </insert>
+ 
+<!--  	
+	insert by mariaDB
+ <insert id="insert" parameterType="BulletinBoard">
+ 	insert into bulletin_board(bulletin_head_id,member_id,bulletin_title,bulletin_content)
+ 	values(#{head.head_id},#{member.member_id},#{bulletin_title},#{bulletin_content})
+ 	<selectKey keyProperty="bulletin_board_id" resultType="int">
+ 		select max(bulletin_board_id)+1 from Answer
+ 	</selectKey>
+ 	 </insert>	
+	 -->
+	
+
+ <update id="update" parameterType="BulletinBoard">
+  	update bulletin_board
+  	set bulletin_head_id=#{head.head_id},member_id=#{member.member_id},bulletin_title=#{bulletin_title},bulletin_content=#{bulletin_content}
+  	where bulletin_board_id = #{bulletin_board_id}
+ </update>
+ <update id="updateHit" parameterType="int">
+ 	update bulletin_board set bulletin_hit =bulletin_hit+1 where bulletin_board_id=#{bulletin_board_id} 
+ </update>
+ <delete id="delete" parameterType="BulletinBoard">
+ 	delete from bulletin_board where bulletin_board_id = #{bulletin_board_id}
+ </delete>
+ 
+ <sql id="selectInclude" >
+ 	select bulletin_board_id,bulletin_head_id,member_id,bulletin_title,bulletin_content,bulletin_regdate,bulletin_hit from bulletin_board
+ </sql>
+  <!-- 내가 작성할 자유게시판 게시글 가져오기 (박현호 : 190503)-->
+  <!-- ========================================================= -->
+  <select id="selectMyBulletinBoards" parameterType="int" resultType="BulletinBoard">
+  	<include refid="selectInclude"/> where member_id = #{member_id}
+  </select>
+  <!-- ========================================================= -->
+</mapper>

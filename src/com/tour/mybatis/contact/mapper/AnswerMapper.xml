@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Answer">
+  <sql id="selectSQL">
+  	select * from Answer
+  </sql>
+  
+  <!-- 질문글의 답변 가져오기 -->
+  <select id="select" parameterType="QnABoard" resultType="Answer">
+  	<include refid="selectSQL"/> where qnaBoard_id=#{qnaBoard_id}
+  </select>
+  
+  <!-- 답변글 등록!! -->
+  <insert id="insert" parameterType="Answer">
+  	insert into Answer(answer_id, qnaBoard_id, answer_content, answer_writer) values(seq_answer.nextval, #{qnaBoard_id}, #{answer_content}, #{answer_writer})
+  	<selectKey resultType="int" keyProperty="answer_id">
+  		select seq_answer.currval as answer_id from dual
+  	</selectKey>
+  </insert>
+<!--   
+ 답변글 등록!!MariaDB Query
+  <insert id="insert" parameterType="Answer">  	
+  	===========================================================================================================
+  		insert into Answer(qnaBoard_id, answer_content, answer_writer) values(#{qnaBoard_id}, #{answer_content}, #{answer_writer})
+  	===========================================================================================================
+  	<selectKey resultType="int" keyProperty="answer_id">  	
+  	MariaDB Query
+  	===========================================================================================================
+  		select max(answer_id)+1 from Answer
+  	=========================================================================================================== 	
+  	</selectKey>
+  </insert>
+   -->
+  <!-- 답변글 삭제하기! -->
+  <delete id="delete" parameterType="int">
+  	delete from Answer where answer_id=#{answer_id}
+  </delete>
+  
+  <!-- 답변글 수정하기!! -->
+  <update id="update" parameterType="Answer">
+  	update answer set answer_content=#{answer_content} where answer_id=#{answer_id}
+  </update>
+  
+</mapper>

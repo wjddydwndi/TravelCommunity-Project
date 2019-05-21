@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Gallery">
+ 	
+ 	<resultMap type="Gallery" id="GalleryAll">
+ 		<id column="gallery_id"					 property="gallery_id"/>
+ 		<result column="gallery_title"			 property="gallery_title"/> 	
+ 		<result column="gallery_content" 		property="gallery_content"/> 	
+ 		<result column="gallery_regdate" 		property="gallery_regdate"/>
+ 		<result column="gallery_hit" 			property="gallery_hit"/> 	
+ 		<association column="member_id" 	property="member" javaType="BulletinMember" select="BulletinMember.select"/>
+ 		<collection property="gallery_images" column="gallery_id" javaType="java.util.ArrayList" ofType="Gallery_image" select="Gallery_image.select" />
+ 	
+ 	</resultMap>
+ 	
+ 	<insert id="insert" parameterType="Gallery">
+ 		insert into gallery(member_id,gallery_title,gallery_content)
+ 		values(#{member.member_id},#{gallery_title},#{gallery_content})
+ 		
+ 		<selectKey order="AFTER" resultType="int" keyProperty="gallery_id">
+ 			select max(gallery_id) from gallery
+ 		</selectKey>
+ 	</insert>
+ 	
+ 	<update id="update" parameterType="Gallery">
+ 		update gallery set gallery_title=#{gallery_title},gallery_content=#{gallery_content},gallery_regdate=now() where gallery_id=#{gallery_id}
+ 	</update>
+ 	
+	<update id="updateHit" parameterType="int">
+		update gallery set gallery_hit=gallery_hit+1 where gallery_id=#{gallery_id}
+	</update>
+
+ 	<delete id="delete" parameterType="int">
+ 		delete from gallery where gallery_id=#{gallery_id}
+ 	</delete>
+
+ 	<select id="selectAll" resultMap="GalleryAll">
+ 		select gallery_id,member_id,gallery_title,gallery_content,gallery_regdate,gallery_hit from gallery
+ 	</select>
+ 	
+ 	<select id="select" parameterType="int" resultMap="GalleryAll">
+ 		select gallery_id,member_id,gallery_title,gallery_content,gallery_regdate,gallery_hit from gallery where gallery_id=#{gallery_id}
+ 	</select>
+ 	
+
+ 	<select id="searchAll" resultMap="GalleryAll">
+ 		 select gallery_id,member_id,gallery_title,gallery_content,gallery_regdate,gallery_hit from gallery
+ 	</select>
+
+ 	<select id="searchTitle" parameterType="String" resultMap="GalleryAll">
+ 	 	select gallery_id,member_id,gallery_title,gallery_content,gallery_regdate,gallery_hit from gallery where gallery_title like #{searchText}
+ 	</select>
+
+ 	<select id="searchWriter" parameterType="Gallery" resultMap="GalleryAll">
+ 	  	select gallery_id,member_id,gallery_title,gallery_content,gallery_regdate,gallery_hit from gallery where member_id=#{member.member_id}
+ 	</select>
+ 
+  <sql id="selectInclude" >
+ 	select gallery_id,member_id,gallery_title,gallery_content,gallery_regdate,gallery_hit from gallery
+ </sql>
+  <select id="selectMyGallery" parameterType="int" resultType="Gallery">
+  	<include refid="selectInclude"/> where member_id = #{member.member_id}
+  </select>
+  
+  	<!-- 메인화면 -->
+	<select id="mainSelectAll" resultMap="GalleryAll">
+		select gallery_id,member_id,gallery_title,gallery_content,gallery_regdate,gallery_hit
+		from gallery order by gallery_hit desc
+	</select>
+ 
+</mapper>
