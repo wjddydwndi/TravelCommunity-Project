@@ -6,11 +6,11 @@
   <li>개발 환경 : STS4, JavaEE, MariaDB, OracleXE</li>
   <li>본인 개발 Part</li>
   --------------------------------------<br>
-    1. 사이트 Design 재구성<br>
-    2. Login/Out<br>
-    3. MyPage<br>
-    4. 관리자 Page<br>
-    5. 고객센터 게시판<br>
+    1. 갤러리 게시판<br>
+    2. 회원가입 관련 처리<br>
+    3. MainPage 갤러리 파트<br>
+    4. 이미지 관련 처리(사진)<br>
+    
   --------------------------------------<br>
 </ul>
 <table>
